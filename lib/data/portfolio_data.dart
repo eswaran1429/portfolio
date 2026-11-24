@@ -5,7 +5,7 @@ class PortfolioData {
   static const name = 'Eswaran R';
   static const role = 'Flutter Developer';
   static const location = 'India';
-  static const openToWork = true; // set false once hired
+  static const openToWork = false; // public "Open to Flutter roles" badge — hidden while employed
   static const email = 'eswaranr1429@gmail.com';
   static const resumeUrl = 'https://example.com/resume.pdf';
 
@@ -22,7 +22,7 @@ class PortfolioData {
       'Flutter developer with 2+ years building production apps for taxi, insurance, and matrimony '
       'platforms — from first screen to Play Store and App Store release.';
 
-  static const highlights = [('2+', 'Years'), ('5', 'Store apps'), ('15K+', 'Downloads')];
+  static const highlights = [('2+', 'Years'), ('6', 'Store apps'), ('15K+', 'Downloads')];
 
   static const _play = 'https://play.google.com/store/apps/details?id=';
 
@@ -50,6 +50,15 @@ class PortfolioData {
       ],
       tech: ['Flutter', 'REST APIs', 'Live Tracking', 'Payments'],
       liveUrl: '${_play}com.silvertaxicustomer.silver_taxi_customer',
+    ),
+    Project(
+      slug: 'silver-taxi-admin',
+      title: 'Silver Taxi Admin',
+      summary: 'Admin app for the Silver One Way Taxi service.',
+      // TODO: add 2–3 features (Play Store description didn't load for me).
+      features: [],
+      tech: ['Flutter', 'REST APIs'],
+      liveUrl: '${_play}com.thereciprocalsolutions.admin_app',
     ),
     Project(
       slug: 'ridedosh-partner',
@@ -114,6 +123,16 @@ class PortfolioData {
   static const experience = [
     Experience(
       role: 'Flutter Developer',
+      company: 'The Reciprocal Solutions',
+      period: 'May 2026 — Present',
+      points: [
+        'Building and maintaining the Silver Taxi platform — driver (10K+ downloads), customer, and admin apps.',
+        'Developed the Ridedosth Partner and Kongu Elite Matrimony apps for production release.',
+        'Handle real-time trip updates, push notifications, live location, and Play Store releases.',
+      ],
+    ),
+    Experience(
+      role: 'Flutter Developer',
       company: 'Younder Bots Private Limited',
       period: 'Sep 2025 — Jan 2026',
       points: [
@@ -144,6 +163,7 @@ class PortfolioData {
     ),
   ];
 
+
   // ---- Sidebar ----
 
   static const profileInfo = [
@@ -153,20 +173,19 @@ class PortfolioData {
     ('CGPA', '8.2'),
   ];
 
-  static const coreSkills = [
-    ('Flutter', 0.9),
-    ('Dart', 0.85),
-    ('GetX', 0.85),
-    ('REST APIs', 0.85),
-    ('Provider', 0.8),
-    ('Firebase', 0.75),
-  ];
-
-  static const tools = ['Dio', 'HTTP', 'JSON', 'SQLite', 'Git', 'GitHub', 'Android Studio', 'Postman'];
 
   static const socials = [
-    SocialLink(label: 'GitHub', icon: Icons.code, url: 'https://github.com/eswaran1429/'),
-    SocialLink(label: 'LinkedIn', icon: Icons.work_outline, url: 'https://www.linkedin.com/in/eswaran-r-a85545235/'),
+    SocialLink(
+      label: 'GitHub',
+      asset: 'assets/images/github.png',
+      tintAsset: true,
+      url: 'https://github.com/eswaran1429/',
+    ),
+    SocialLink(
+      label: 'LinkedIn',
+      asset: 'assets/images/linkedin.png',
+      url: 'https://www.linkedin.com/in/eswaran-r-a85545235/',
+    ),
     SocialLink(label: 'Email', icon: Icons.mail_outline, url: 'mailto:$email'),
   ];
 }

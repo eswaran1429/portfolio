@@ -4,10 +4,14 @@ import 'package:portfolio/core/theme/app_theme.dart';
 
 class CircleIconButton extends StatelessWidget {
   final String tooltip;
-  final IconData icon;
+  final IconData? icon;
   final VoidCallback onTap;
 
-  const CircleIconButton({super.key, required this.tooltip, required this.icon, required this.onTap});
+  /// Custom content (e.g. a logo image) shown instead of [icon].
+  final Widget? child;
+
+  const CircleIconButton({super.key, required this.tooltip, this.icon, this.child, required this.onTap})
+    : assert(icon != null || child != null);
 
   /// Light/dark toggle.
   factory CircleIconButton.theme() => CircleIconButton(
@@ -26,7 +30,11 @@ class CircleIconButton extends StatelessWidget {
         clipBehavior: Clip.antiAlias,
         child: InkWell(
           onTap: onTap,
-          child: SizedBox(width: 44, height: 44, child: Icon(icon, size: 20, color: AppColors.textPrimary)),
+          child: SizedBox(
+            width: 44,
+            height: 44,
+            child: Center(child: child ?? Icon(icon, size: 20, color: AppColors.textPrimary)),
+          ),
         ),
       ),
     );

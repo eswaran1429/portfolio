@@ -39,8 +39,17 @@ class Experience {
 
 class SocialLink {
   final String label;
-  final IconData icon;
   final String url;
 
-  const SocialLink({required this.label, required this.icon, required this.url});
+  /// Material icon, used when [asset] is null.
+  final IconData? icon;
+
+  /// Logo image path, e.g. assets/images/github.png.
+  final String? asset;
+
+  /// Recolor a single-color [asset] to the theme's text color (keeps black logos visible in dark mode).
+  final bool tintAsset;
+
+  const SocialLink({required this.label, required this.url, this.icon, this.asset, this.tintAsset = false})
+    : assert(icon != null || asset != null);
 }

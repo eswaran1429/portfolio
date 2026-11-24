@@ -23,6 +23,9 @@ class _ProjectShowcaseState extends State<ProjectShowcase> {
   int _index = 0;
   int _dir = 1; // slide direction of the last change
 
+  // One key per mobile pill, to scroll the selected pill into view.
+  final _pillKeys = [for (final _ in PortfolioData.projects) GlobalKey()];
+
   int get _count => PortfolioData.projects.length;
 
   void _go(int step) => _select((_index + step + _count) % _count, dir: step.sign);
@@ -33,13 +36,25 @@ class _ProjectShowcaseState extends State<ProjectShowcase> {
       _dir = dir ?? (i > _index ? 1 : -1);
       _index = i;
     });
+    // Arrows/swipe can select a pill that's scrolled off; bring it back into view.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final ctx = _pillKeys[i].currentContext;
+      if (ctx != null) {
+        Scrollable.ensureVisible(
+          ctx,
+          alignment: 0.5,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOutCubic,
+        );
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     final wide = Responsive.isDesktop(context);
     final phones = Column(children: [_phones(), const SizedBox(height: 20), _controls()]);
-    final details = _details();
+    final details = _details(showList: wide);
 
     return Container(
       padding: EdgeInsets.all(wide ? 32 : 20),
@@ -58,8 +73,23 @@ class _ProjectShowcaseState extends State<ProjectShowcase> {
             )
           : Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [phones, const SizedBox(height: 24), details],
+              children: [_pills(), const SizedBox(height: 20), phones, const SizedBox(height: 24), details],
             ),
+    );
+  }
+
+  /// Mobile project picker: horizontally scrollable pills right above the phones.
+  Widget _pills() {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: [
+          for (final (i, proj) in PortfolioData.projects.indexed) ...[
+            if (i > 0) const SizedBox(width: 8),
+            _ProjectPill(key: _pillKeys[i], label: proj.title, selected: i == _index, onTap: () => _select(i)),
+          ],
+        ],
+      ),
     );
   }
 
@@ -170,8 +200,8 @@ class _ProjectShowcaseState extends State<ProjectShowcase> {
     );
   }
 
-  /// Active project details, Play link, and the full project list.
-  Widget _details() {
+  /// Active project details, Play link, and (desktop) the full project list.
+  Widget _details({required bool showList}) {
     final projects = PortfolioData.projects;
     final p = projects[_index];
 
@@ -187,14 +217,46 @@ class _ProjectShowcaseState extends State<ProjectShowcase> {
           const SizedBox(height: 18),
           AppButton(label: 'Google Play', icon: Icons.north_east, outlined: true, onTap: () => openLink(p.liveUrl!)),
         ],
-        const SizedBox(height: 20),
-        Divider(color: AppColors.stroke, height: 1),
-        const SizedBox(height: 16),
-        const _Eyebrow('All projects'),
-        const SizedBox(height: 8),
-        for (final (i, proj) in projects.indexed)
-          _ProjectRow(number: i + 1, label: proj.title, selected: i == _index, onTap: () => _select(i)),
+        if (showList) ...[
+          const SizedBox(height: 20),
+          Divider(color: AppColors.stroke, height: 1),
+          const SizedBox(height: 16),
+          const _Eyebrow('All projects'),
+          const SizedBox(height: 8),
+          for (final (i, proj) in projects.indexed)
+            _ProjectRow(number: i + 1, label: proj.title, selected: i == _index, onTap: () => _select(i)),
+        ],
       ],
+    );
+  }
+}
+
+/// Mobile pill button for picking a project.
+class _ProjectPill extends StatelessWidget {
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
+
+  const _ProjectPill({super.key, required this.label, required this.selected, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: selected ? AppColors.textPrimary : Colors.transparent,
+      shape: StadiumBorder(side: BorderSide(color: selected ? Colors.transparent : AppColors.stroke)),
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+          child: CustomText(
+            text: label,
+            fontSize: 13,
+            fontWeight: FontWeight.w600,
+            color: selected ? AppColors.onInverse : AppColors.textMuted,
+          ),
+        ),
+      ),
     );
   }
 }

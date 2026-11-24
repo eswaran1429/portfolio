@@ -16,8 +16,6 @@ class HeroSection extends StatelessWidget {
     final intro = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Name/status live in the sidebar; show them here only when it's hidden in the drawer.
-        if (!Responsive.showSidebar(context)) ...[const _StatusRow(), const SizedBox(height: 24)],
         const _Headline(),
         const SizedBox(height: 22),
         ConstrainedBox(
@@ -30,74 +28,41 @@ class HeroSection extends StatelessWidget {
     final stats = [for (final h in PortfolioData.highlights) _Stat(value: h.$1, label: h.$2, stacked: wide)];
 
     return SectionWrapper(
-      child: (wide
-              ? Row(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Expanded(child: intro),
-                    const SizedBox(width: 48),
-                    SizedBox(
-                      width: 220,
-                      child: Column(
-                        children: [
-                          for (final (i, s) in stats.indexed) ...[if (i > 0) const SizedBox(height: 12), s],
-                        ],
-                      ),
-                    ),
-                  ],
-                )
-              : Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    intro,
-                    const SizedBox(height: 28),
-                    Row(
+      child:
+          (wide
+                  ? Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        for (final (i, s) in stats.indexed) ...[
-                          if (i > 0) const SizedBox(width: 10),
-                          Expanded(child: s),
-                        ],
+                        Expanded(child: intro),
+                        const SizedBox(width: 48),
+                        SizedBox(
+                          width: 220,
+                          child: Column(
+                            children: [
+                              for (final (i, s) in stats.indexed) ...[if (i > 0) const SizedBox(height: 12), s],
+                            ],
+                          ),
+                        ),
                       ],
-                    ),
-                  ],
-                ))
-          .animate()
-          .fadeIn(duration: 600.ms)
-          .slideY(begin: 0.04, end: 0, curve: Curves.easeOut),
-    );
-  }
-}
-
-class _StatusRow extends StatelessWidget {
-  const _StatusRow();
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        CustomText(text: PortfolioData.name, fontSize: 15, fontWeight: FontWeight.w600, color: AppColors.textPrimary),
-        const SizedBox(height: 2),
-        Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: 8,
-              height: 8,
-              decoration: BoxDecoration(
-                color: PortfolioData.openToWork ? AppColors.accent : AppColors.textMuted,
-                shape: BoxShape.circle,
-              ),
-            ),
-            const SizedBox(width: 8),
-            CustomText(
-              text: PortfolioData.openToWork ? 'Open to Flutter roles' : PortfolioData.role,
-              fontSize: 14,
-              color: AppColors.textMuted,
-            ),
-          ],
-        ),
-      ],
+                    )
+                  : Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        intro,
+                        const SizedBox(height: 28),
+                        Row(
+                          children: [
+                            for (final (i, s) in stats.indexed) ...[
+                              if (i > 0) const SizedBox(width: 10),
+                              Expanded(child: s),
+                            ],
+                          ],
+                        ),
+                      ],
+                    ))
+              .animate()
+              .fadeIn(duration: 600.ms)
+              .slideY(begin: 0.04, end: 0, curve: Curves.easeOut),
     );
   }
 }
@@ -124,7 +89,9 @@ class _Stat extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      padding: stacked ? const EdgeInsets.fromLTRB(20, 16, 20, 16) : const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+      padding: stacked
+          ? const EdgeInsets.fromLTRB(20, 16, 20, 16)
+          : const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
       decoration: BoxDecoration(
         color: AppColors.surface,
         borderRadius: BorderRadius.circular(18),
@@ -162,13 +129,13 @@ class _Headline extends StatelessWidget {
     final size = Responsive.value<double>(context, mobile: 38, tablet: 50, desktop: 60);
 
     Widget word(String w, {Color? color}) => CustomText(
-          text: w,
-          fontSize: size,
-          fontWeight: FontWeight.w700,
-          height: 1.05,
-          letterSpacing: -size * 0.035,
-          color: color ?? AppColors.textPrimary,
-        );
+      text: w,
+      fontSize: size,
+      fontWeight: FontWeight.w700,
+      height: 1.05,
+      letterSpacing: -size * 0.035,
+      color: color ?? AppColors.textPrimary,
+    );
 
     return Wrap(
       spacing: size * 0.26,

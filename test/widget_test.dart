@@ -24,13 +24,28 @@ void main() {
     expect(find.byIcon(Icons.dark_mode_outlined), findsOneWidget);
   });
 
-  testWidgets('narrow: sidebar opens as drawer', (tester) async {
+  testWidgets('narrow: profile inline, contact buttons pinned, no drawer', (tester) async {
     await _pumpAt(tester, const Size(390, 844));
 
     expect(find.byType(ProfileSidebar), findsNothing);
-    await tester.tap(find.byTooltip('Profile'));
+    expect(find.byType(Drawer), findsNothing);
+    expect(find.byType(ProfileHeader), findsOneWidget);
+    expect(find.text(PortfolioData.name), findsOneWidget);
+    expect(find.byType(ContactButtons), findsOneWidget);
+    expect(find.byType(ProfileDetails), findsOneWidget);
+  });
+
+  testWidgets('narrow: project pills replace the list and switch project', (tester) async {
+    await _pumpAt(tester, const Size(390, 2400));
+    final n = PortfolioData.projects.length.toString().padLeft(2, '0');
+
+    expect(find.text('ALL PROJECTS'), findsNothing);
+    final pill = find.text(PortfolioData.projects[1].title).first; // pills sit above the phones
+    await tester.ensureVisible(pill);
     await tester.pumpAndSettle();
-    expect(find.byType(ProfileSidebar), findsOneWidget);
+    await tester.tap(pill);
+    await tester.pumpAndSettle();
+    expect(find.text('02 / $n'), findsOneWidget);
   });
 
   testWidgets('showcase: arrows switch project and wrap around', (tester) async {
